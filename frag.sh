@@ -1,16 +1,23 @@
 #!/bin/bash
 
-echo "No fragmentation allocation times:"
 ./testalloc > noFragTimes.txt
 
-for run in {1..18}
+./fragment_pin testfile &
+for run in {1..12}
 do
   ./fragment &
 done
 
-sleep 60
+sleep 150
 
-echo "With fragmentation allocation times:"
+killall -SIGSTOP fragment
+echo "Done fragmenting...."
+
 ./testalloc > fragTimes.txt
+
+echo "No fragmentation allocation times:"
+./parse_csv.py noFragTimes.txt
+echo "With fragmentation allocation times:"
+./parse_csv.py fragTimes.txt
 
 killall fragment
