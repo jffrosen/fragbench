@@ -4,7 +4,7 @@
 
 for run in {1..12}
 do
-  ./fragment &
+	./fragment &
 done
 
 sleep 150
