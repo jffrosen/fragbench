@@ -1,17 +1,24 @@
-all:
-	g++ fragment.cc -std=c++0x -o fragment
-	g++ testalloc.cc -std=c++0x -o testalloc
+TARGETS = testalloc fragment
+OBJS = testalloc.o fragment.o
+CXX := g++
+LD := g++
+CFLAGS = 
+LDFLAGS = 
 
-testalloc: testalloc.cc
-	g++ testalloc.cc -std=c++0x -o testalloc
+TIMER_DIR = ./rdtscp_timer
+
+all: timer fragment testalloc
+
+timer:
+	cd $(TIMER_DIR); $(MAKE)
+
+testalloc: testalloc.cc timer
+	g++ $(TIMER_DIR)/timing.o testalloc.cc -std=c++0x -lrt -o testalloc
 
 fragment: fragment.cc
 	g++ fragment.cc -std=c++0x -o fragment
 
-pin: fragment_pin.cc
-	g++ -std=c++0x fragment_pin.cc -o fragment_pin
-
 clean:
 	rm -rf testalloc
 	rm -rf fragment
-	rm -rf fragment_pin
+	rm -rf *.txt *.csv

@@ -6,17 +6,21 @@
 #include <cstring>
 #include <ctime>
 #include <pthread.h>
+#include <unistd.h>
 #include "rdtscp_timer/timing.hh"
+#include "support.hh"
 
-#define MEM_SIZE 32934960000
-#define MAX_ALLOC_SIZE (MEM_SIZE / 10000)
-#define FRAG_OCC .05
-#define TIMEOUT 120
+const static double FRAG_OCC = .05;
+const static int TIMEOUT = 120;
 
 static void fragment() {
-  std::vector<char*> allocations;
-  std::unordered_map<char*,int> allocSizes;
-  unsigned long long memFootprint = 0;
+	// constants
+	const unsigned long long MEM_SIZE = get_total_memory();
+	const unsigned long long MAX_ALLOC_SIZE = MEM_SIZE / 10000;
+
+  std::vector<char*> allocations;							// hold our mallocs
+  std::unordered_map<char*,int> allocSizes;		// hold our malloc sizes
+  unsigned long long memFootprint = 0;				// total B of memory malloc'ed
 
   // start the clock
   std::clock_t start;
@@ -54,10 +58,12 @@ static void fragment() {
   while (true)
     sleep(100000); 
 
+	// Note: this will never execute because I'm too lazy to come up with a better
+	//			 synchronization scheme between the allocation tester and the fragmenters
   for (int i = 0; i < allocations.size(); i++) {
     char *victim = allocations[i];
-    //delete [] victim;
-    //free(victim);
+    delete [] victim;
+    free(victim);
   }
 }
 

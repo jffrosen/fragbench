@@ -2,7 +2,6 @@
 
 ./testalloc > noFragTimes.txt
 
-./fragment_pin testfile &
 for run in {1..12}
 do
   ./fragment &
