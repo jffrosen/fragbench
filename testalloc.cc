@@ -15,7 +15,7 @@ static void testAllocation(double clock_speed_ghz) {
 	Timer t(clock_speed_ghz);
 	
 	const int N_ALLOCS = 1;
-	const int N_TRIALS = 100000;
+	const int N_TRIALS = 10000;
 
 	for (int s = 0; s < N_ALLOCS; s++) {
 		for (int i = 0; i < N_TRIALS; i++) {
@@ -23,6 +23,7 @@ static void testAllocation(double clock_speed_ghz) {
 			char *a = NULL;
 			t.tick();
 			assert(!posix_memalign(static_cast<void**>(&vptr), 2*MB, 2*MB));
+			memset(a, rand(), 2*MB); // make sure we actually have pages allocated
 			t.tock();
 			a = static_cast<char*>(vptr);
 			assert(!(reinterpret_cast<unsigned long long>(a) & 0xFFFFF));
@@ -44,7 +45,7 @@ static void testAllocation(double clock_speed_ghz) {
 
 int main(int argc, char **argv) {
 	if (argc != 2) {
-		cout << "WARNING: No system clock speed provided, RDTSCP timing will not be used!" << endl;
+		cerr << "WARNING: No system clock speed provided, RDTSCP timing will not be used!" << endl;
 		testAllocation(-1);
 	} else {
 		testAllocation(atof(argv[1]));

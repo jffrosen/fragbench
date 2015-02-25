@@ -2,7 +2,7 @@
 
 ./testalloc > noFragTimes.txt
 
-for run in {1..12}
+for run in {1..14}
 do
 	./fragment &
 done

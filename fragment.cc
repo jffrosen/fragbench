@@ -35,7 +35,7 @@ static void fragment() {
 			unsigned int size = rand() % MAX_ALLOC_SIZE;
 			//char *a = new char[size];
 			char *a = static_cast<char*>(malloc(size * sizeof(char)) );
-			memset(a, rand(), sizeof(a)); // make sure we actually have pages allocated
+			memset(a, rand(), size); // make sure we actually have pages allocated
 			allocations.push_back(a);
 			allocSizes[a] = size;
 			memFootprint += size;
