@@ -31,7 +31,6 @@ static void testAllocation(double clock_speed_ghz) {
 			ptrs.push_back(a);
 		}
 
-		while (true) {}
 		for (int i = 0; i < N_TRIALS - 1; i++)
 			cout << times[i] << ", ";
 		cout << times[N_TRIALS - 1] << endl;
