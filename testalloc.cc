@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <cassert>
+#include <cstring>
 #include "rdtscp_timer/timing.hh"
 
 #define MB 1048576
@@ -15,7 +16,7 @@ static void testAllocation(double clock_speed_ghz) {
 	Timer t(clock_speed_ghz);
 	
 	const int N_ALLOCS = 1;
-	const int N_TRIALS = 10000;
+	const int N_TRIALS = 1000;
 
 	for (int s = 0; s < N_ALLOCS; s++) {
 		for (int i = 0; i < N_TRIALS; i++) {
@@ -23,14 +24,14 @@ static void testAllocation(double clock_speed_ghz) {
 			char *a = NULL;
 			t.tick();
 			assert(!posix_memalign(static_cast<void**>(&vptr), 2*MB, 2*MB));
-			memset(a, rand(), 2*MB); // make sure we actually have pages allocated
+			memset(vptr, rand(), 2*MB); // make sure we actually have pages allocated
 			t.tock();
-			a = static_cast<char*>(vptr);
 			assert(!(reinterpret_cast<unsigned long long>(a) & 0xFFFFF));
 			times.push_back(t.get_time());
 			ptrs.push_back(a);
 		}
 
+		while (true) {}
 		for (int i = 0; i < N_TRIALS - 1; i++)
 			cout << times[i] << ", ";
 		cout << times[N_TRIALS - 1] << endl;
